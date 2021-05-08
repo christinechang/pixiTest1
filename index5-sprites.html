@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>PixiJS</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+  <body>
+    <canvas id="mycanvas"></canvas>
+    <script src="pixi.min.js"></script>
+    <script type="text/javascript">
+    const canvas = document.getElementById('mycanvas');
+    const app = new PIXI.Application({ // takes care of boilerplate to get up and running w/pixijs
+      view: canvas,
+      width: window.innerWidth,
+      height: window.innerHeight
+    });
+    const texture = PIXI.Texture.from('images/octo.PNG');
+    const doggyTexture = PIXI.Texture.from('images/doggy.PNG');
+
+    let sprite1, sprite2, sprite3, sprite4;
+
+    const img = new PIXI.Sprite(texture);
+    img.x = app.renderer.width / 2; // where to place image (to center)
+    img.y = app.renderer.height / 2;
+    img.anchor.x = 0.5; // set anchor of image to center - which is placed at img.x
+    img.anchor.y = 0.5;
+    app.stage.addChild(img);
+
+    let container = new PIXI.Container();
+    app.stage.addChild(container);
+
+    sprite1 = new PIXI.Sprite(doggyTexture);
+    sprite1.x = 200; // can do individual x,y or as new PIXI.Point(100,200)
+    sprite1.y = 200;
+    sprite1.scale = new PIXI.Point(0.5, 0.5);
+    sprite1.anchor.set(0.5);
+    sprite1.tint = 0xff0000;  // tint it a color
+    container.addChild(sprite1);
+
+    sprite2 = new PIXI.Sprite(doggyTexture);
+    sprite2.position = new PIXI.Point(300, 200);
+    sprite2.scale = new PIXI.Point(0.5, 0.5);
+    container.addChild(sprite2);
+
+    sprite3 = new PIXI.Sprite(doggyTexture);
+    sprite3.position.set(app.renderer.width/2, app.renderer.height/2);
+    sprite3.scale = new PIXI.Point(0.5, 0.5);
+    sprite3.anchor = new PIXI.Point(0.5, 0.5); // to set center or:
+    sprite3.pivot.set(200,200);  // set pivot point
+    container.addChild(sprite3);
+
+    sprite4 = new PIXI.Sprite(doggyTexture);
+    sprite4.position.set(app.renderer.width/2, app.renderer.height/2);
+    sprite4.scale = new PIXI.Point(0.5, 0.5);
+    sprite4.anchor.set(0.5);
+    sprite4.blendMode = PIXI.BLEND_MODES.MULTIPLY; // multiply  whites go transparent
+    container.addChild(sprite4);
+
+    // multiple sprites in array
+    let sprites = [];
+    addSprites();
+
+    app.ticker.add(animate);
+
+    let delta = 0;
+    function animate() {
+      delta += 0.1;
+      sprite1.x = 200 + Math.sin(delta) * 10;
+      sprite1.y = 200 + Math.sin(delta) * 10;
+      sprite2.x = 300 + Math.sin(delta) * 10;
+      sprite3.rotation += .05;
+      container.x = Math.sin(delta) * 10;
+      sprite2.alpha = Math.sin(delta);  //transparency fade in and out between 1, -1
+      // sprite4.visible = false; // hide sprite
+      sprite1.interactive = true; // these 2 give pointer when hover mouse over sprite
+      sprite1.buttonMode = true;
+
+      // sprite2.mask = sprite2; // one sprite masks another
+    }
+    // array of sprites:
+    function addSprites() {
+      for (let i = 0 ; i< 10 ; i++) {
+        let sprite = new PIXI.Sprite(doggyTexture);
+        sprite.x = Math.random() * app.renderer.screen.width;
+        sprite.y = Math.random() * app.renderer.screen.height;
+        sprite.scale = new PIXI.Point(0.25, 0.25);
+        sprite.tint = Math.random() * 0xffffff;
+        sprite.anchor.set(0.5);
+
+        container.addChild(sprite);
+        sprites.push(sprite);
+      }
+    }
+    </script>
+  </body>
+</html> 

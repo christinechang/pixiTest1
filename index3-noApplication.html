@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>PixiJS</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+  <body>
+    <canvas id="mycanvas"></canvas>
+    <script src="pixi.min.js"></script>
+    <script type="text/javascript">
+      const canvas = document.getElementById('mycanvas');
+      // const app = new PIXI.Application({ // takes care of boilerplate to get up and running w/pixijs
+      //   view: canvas,
+      //   width: window.innerWidth,
+      //   height: window.innerHeight
+      // });
+      /////////////////
+      // ADAPTED FROM INDEX1 TO BECOME RESPONSIVE and NOT USE PIXI.Application - but 'renderer'
+      let _w = window.innerWidth;
+      let _h = window.innerHeight;
+      const renderer = new PIXI.Renderer({ // will be passed into Application above
+        view: canvas,
+        width: _w,
+        height: _h,
+        resolution: window.devicePixelRatio, // will multiply the size of the renderer by the resolution
+        autoDensity: true // make sure that through css will scale back down to make sure it fits within the defined width and height that we set
+      });
+      window.addEventListener('resize', resize); // responsive - add event listener to windows resize event
+      
+      function resize() { // make a resize handler
+        _w = window.innerWidth;
+        _h = window.innerHeight;
+        renderer.resize(_w, _h);
+      }
+
+      // root container:
+      const stage = new PIXI.Container();
+
+      const texture = PIXI.Texture.from('images/octo.PNG');
+      const img = new PIXI.Sprite(texture);
+      // img.x = app.renderer.width / 2; // where to place image (to center)
+      // img.y = app.renderer.height / 2;
+
+      img.anchor.x = 0.5; // set anchor of image to center - which is placed at img.x
+      img.anchor.y = 0.5;
+      stage.addChild(img);
+      // app.stage.addChild(img);
+      // app.ticker.add(animate);
+
+      const ticker = new PIXI.Ticker();
+      ticker.add(animate);
+      ticker.start(); // also stop() and addOnce()
+      function animate() {
+        img.x = renderer.screen.width / 2; // where to place image (to center)
+        img.y = renderer.screen.height / 2;
+        img.rotation += 0.1;
+        renderer.render(stage);
+      }
+    </script>
+  </body>
+</html> 

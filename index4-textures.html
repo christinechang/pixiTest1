@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>PixiJS</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+  <body>
+    <canvas id="mycanvas"></canvas>
+    <script src="pixi.min.js"></script>
+    <script type="text/javascript">
+      const canvas = document.getElementById('mycanvas');
+      const app = new PIXI.Application({ // takes care of boilerplate to get up and running w/pixijs
+        view: canvas,
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+      console.log('TEXTURE CACHE::::', PIXI.utils.TextureCache);
+
+      let loader = PIXI.Loader.shared;
+
+      loader.onComplete.add(handleLoadComplete);
+      // other built in functions:  that can then be chained - but chaining doesnt work
+      loader.onLoad.add(handleLoadAsset);
+      loader.onError.add(handleLoadError);
+      loader.onProgress.add(handleLoadProgress);
+
+      // loader.add("images/octo.PNG");
+      loader.add("octo", "images/octo.PNG");
+      loader.add("images/doggy.PNG");
+      loader.load();  // actually load our asset
+
+      let img; // declared here so we can access outside following function
+
+      function handleLoadProgress(loader, resource) {
+        console.log(loader.progress + "% loaded");
+      }
+      function handleLoadAsset(loader, resource) {
+        console.log("asset loaded: " + resource.name);
+      }
+      function handleLoadError() {
+        console.log("load error");
+      }
+      function handleLoadComplete() { // executes after loader loads all assets
+        // let texture = loader.resources["images/octo.PNG"].texture;
+        let texture = loader.resources.octo.texture; // or use alias given in loader.add statement
+        img = new PIXI.Sprite(texture);
+        img.anchor.x = 0.5;
+        img.anchor.y = 0.5;
+        app.stage.addChild(img); //add to scene
+
+        let dogTxt = loader.resources["images/doggy.PNG"].texture;
+        img2 = new PIXI.Sprite(dogTxt);
+        img2.anchor.x = 0.5;
+        img2.anchor.y = 0.5;
+        app.stage.addChild(img2); //add to scene
+        app.ticker.add(animate);
+        setTimeout(() => {
+          img.texture = loader.resources["images/doggy.PNG"].texture // change the texture after 2 seconds
+        }, 2000)
+      }
+      function animate() {
+        img.rotation += 0.1;
+        img.x = app.renderer.screen.width / 2;
+        img.y = app.renderer.screen.height / 2;
+        img2.rotation += 0.05;
+        img2.x = app.renderer.screen.width / 4;
+        img2.y = app.renderer.screen.height / 4;
+      }
+    </script>
+  </body>
+</html> 

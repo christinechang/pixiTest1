@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>PixiJS</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+  <body>
+    <canvas id="mycanvas"></canvas>
+    <script src="pixi.min.js"></script>
+    <script type="text/javascript">
+        const canvas = document.getElementById('mycanvas');
+        const app = new PIXI.Application({ // takes care of boilerplate to get up and running w/pixijs
+        view: canvas,
+        width: window.innerWidth,
+        height: window.innerHeight
+        });
+        
+        let graphic = new PIXI.Graphics();
+        graphic.x = app.renderer.width / 2;
+        graphic.y = app.renderer.height / 2;
+        app.stage.addChild(graphic);
+
+        graphic.lineStyle(5, 0x00ff00);
+
+        // // CIRCLE
+        // graphic.beginFill(0xff0000);
+        // graphic.drawCircle(0,0,100);
+        // graphic.endFill();
+
+        // // RECTANGLE
+        // graphic.beginFill(0xff0000);
+        // graphic.drawRect(200,0,100,200);
+        // graphic.endFill();
+
+        // // STAR -- does not exist?
+        // graphic.beginFill(0xff0000);
+        // graphic.drawStar(200,200,5, 100,40);
+        // graphic.closePath();
+        // graphic.endFill();
+
+        // // POLYGON
+        // graphic.beginFill(0xff0000);
+        // graphic.drawPolygon([
+        //     new PIXI.Point(100,100),
+        //     new PIXI.Point(100,200),
+        //     new PIXI.Point(200,100),
+        // ]);
+        // graphic.closePath(); // close the path
+        // graphic.endFill();
+
+        // // MOVE TO DRAW
+        // graphic.beginFill(0xff0000);
+        // graphic.moveTo(0,0);
+        // graphic.lineTo(100,100),
+        // graphic.lineTo(100,200),
+        // graphic.lineTo(0,100),
+        // graphic.bezierCurveTo(-200, 200, -200, 100, -100, 0),
+        // graphic.quadraticCurveTo(-200, -100, 0, -200),
+        // graphic.arc(0, 0, 50, 0, 0.5);
+        // graphic.closePath(); // close the path
+        // graphic.endFill();
+
+        // pulsing circle using arc
+        let radius = 50;
+        graphic.beginFill(0xff0000);
+        graphic.arc(0, 0, radius, 0, Math.PI * 2);
+        graphic.endFill();
+
+        app.ticker.add(animate);
+
+        let delta = 0;
+        function animate() {
+            delta += 0.1;
+            radius = 50 + Math.sin(delta) * 25;
+            graphic.clear();
+            graphic.beginFill(0xff0000);
+            graphic.arc(0, 0, radius, 0, Math.PI * 2);
+            graphic.endFill();
+        }
+    </script>
+  </body>
+</html> 

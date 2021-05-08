@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>PixiJS</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+  <body>
+    <canvas id="mycanvas"></canvas>
+    <!-- // NOTE - dealing with webGL - always in 3d space - copy and paste vertex shader from existing filter
+    // pixi.js/packages/core/src/fragments/default.vert
+    // https://github.com/pixijs/pixi.js/blob/dev/packages/core/src/fragments/default.vert
+    // create shader and copy from default.vert -->
+    <script id="vertShader" type="x-shader/x-vert">
+        attribute vec2 aVertexPosition;
+        attribute vec2 aTextureCoord;
+        uniform mat3 projectionMatrix;
+        varying vec2 vTextureCoord;
+        void main(void)
+        {
+            gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+            vTextureCoord = aTextureCoord;
+        }
+    </script>
+    <!--  vec4 is 4 part vector == rgba -->
+    <script id="fragShader" type="x-shader/x-frag">
+        varying vec2 vTextureCoord;
+        uniform sampler2D uSampler;
+        uniform float delta;
+        void main(void) {
+            vec4 color = texture2D(uSampler, vTextureCoord); 
+            color.r = delta;
+            gl_FragColor =  color;
+        }
+    </script>
+    <script src="pixi.min.js"></script>
+
+    <script type="text/javascript">
+    const canvas = document.getElementById('mycanvas');
+
+    const app = new PIXI.Application({ // takes care of boilerplate to get up and running w/pixijs
+      view: canvas,
+      width: window.innerWidth,
+      height: window.innerHeight
+    });
+    let vShader = vertShader.innerHTML;
+    let fShader = fragShader.innerHTML;
+    let uniforms = {
+        delta: 0
+    }; //
+    const myFilter = new PIXI.Filter(vShader, fShader, uniforms);
+    //////////////////////////
+    const texture = PIXI.Texture.from('images/octo.PNG');
+    const img = new PIXI.Sprite(texture);
+    img.x = app.renderer.width / 2; // where to place image (to center)
+    img.y = app.renderer.height / 2;
+    img.anchor.x = 0.5; // set anchor of image to center - which is placed at img.x
+    img.anchor.y = 0.5;
+    //////////////////////////
+    // built in filters: http://pixijs.download/release/docs/PIXI.filters.html
+    // img.filters = [new PIXI.filters.BlurFilter];
+
+    // build your own filter:
+    img.filters = [myFilter];
+
+    app.stage.addChild(img);
+
+    app.ticker.add(animate);
+    
+    let delta = 0;
+    function animate() {
+        delta += 0.1;
+        uniforms.delta = 0.5 + Math.sin(delta) * 0.5;
+    }
+    </script>
+  </body>
+</html> 

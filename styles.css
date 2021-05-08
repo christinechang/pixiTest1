@@ -1,0 +1,14 @@
+body {
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#display > * { /* only 1 level down */
+    border: 1px dashed black;
+    background-color: orange;
+}
+canvas {
+    display: block;
+    background-color: blue;
+}
